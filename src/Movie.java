@@ -2,13 +2,11 @@ public class Movie extends RentableItem {
 
     private int movieID;
     private String directorName;
-    private Boolean availability;
 
     public Movie(String movieTitle, int movieID, String directorName, Boolean availability) {
-        super(movieTitle);
+        super(movieTitle, availability);
         this.movieID = movieID;
         this.directorName = directorName;
-        this.availability = availability;
     }
 
     // Retrieves the availability of the movie.

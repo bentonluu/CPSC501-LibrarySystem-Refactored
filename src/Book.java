@@ -2,13 +2,11 @@ public class Book extends RentableItem {
 
     private int bookID;
     private String authorName;
-    private Boolean availability;
 
     public Book(String bookTitle, int bookID, String authorName, Boolean availability) {
-        super(bookTitle);
+        super(bookTitle, availability);
         this.bookID = bookID;
         this.authorName = authorName;
-        this.availability = availability;
     }
 
     // Retrieves the availability of the book.
