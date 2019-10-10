@@ -31,13 +31,13 @@ public class Borrower {
         if (obj instanceof Book) {
             if (ableToBorrow(obj)) {
                 rentedItem.add(new TransactionRecord(((Book) obj).getTitle(), borrowerName, TransactionRecord.BOOK, false));
-                ((Book) obj).bookUnavailable();
+                ((Book) obj).itemUnavailable();
             }
         }
         else if (obj instanceof Movie) {
             if (ableToBorrow(obj)) {
                 rentedItem.add(new TransactionRecord(((Movie) obj).getTitle(), borrowerName, TransactionRecord.MOVIE, false));
-                ((Movie) obj).movieUnavailable();
+                ((Movie) obj).itemUnavailable();
             }
         }
     }
@@ -54,7 +54,7 @@ public class Borrower {
                     }
                     else {
                         rentedItem.get(i).setReturnStatus(true);
-                        ((Book) obj).bookAvailable();
+                        ((Book) obj).itemAvailable();
                         rentedItem.remove(i);
                     }
                 }
@@ -66,7 +66,7 @@ public class Borrower {
                     }
                     else {
                         rentedItem.get(i).setReturnStatus(true);
-                        ((Movie) obj).movieAvailable();
+                        ((Movie) obj).itemAvailable();
                         rentedItem.remove(i);
                     }
                 }

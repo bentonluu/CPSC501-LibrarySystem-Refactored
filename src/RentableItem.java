@@ -13,6 +13,21 @@ public abstract class RentableItem {
         return title;
     }
 
+    // Retrieves the availability of the item.
+    public Boolean getAvailability() {
+        return availability;
+    }
+
+    // Sets the availability of the item to unavailable.
+    public void itemUnavailable() {
+        availability = false;
+    }
+
+    // Sets the availability of the item to available.
+    public void itemAvailable() {
+        availability = true;
+    }
+
     public abstract String itemNameAndDetails();
 
 }
