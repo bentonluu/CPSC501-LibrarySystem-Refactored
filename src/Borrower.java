@@ -46,30 +46,20 @@ public class Borrower {
     // list it is not past the item's due date. If it is past the item's due day, late fine must be paid before returning
     // the item.
     public void returnItem(Object obj, LocalDate returnDate) {
-        for (int i = 0; i < rentedItem.size(); i++) {
+        TransactionRecord item = findTransactionRecord(rentedItem, obj);
+
+        if (item.checkPastDue(returnDate) == true) {
+            System.out.println("Must pay late fine before item can be returned");
+        }
+        else {
+            item.setReturnStatus(true);
+            rentedItem.remove(rentedItem.indexOf(item));
+
             if (obj instanceof Book) {
-                if (rentedItem.get(i).getItemName().equals(((Book) obj).getTitle())) {
-                    if (rentedItem.get(i).checkPastDue(returnDate) == true) {
-                        System.out.println("Must pay late fine before book can be returned");
-                    }
-                    else {
-                        rentedItem.get(i).setReturnStatus(true);
-                        ((Book) obj).itemAvailable();
-                        rentedItem.remove(i);
-                    }
-                }
+                ((Book) obj).itemAvailable();
             }
             else if (obj instanceof Movie) {
-                if (rentedItem.get(i).getItemName().equals(((Movie) obj).getTitle())) {
-                    if (rentedItem.get(i).checkPastDue(returnDate) == true) {
-                        System.out.println("Must pay late fine before movie can be returned");
-                    }
-                    else {
-                        rentedItem.get(i).setReturnStatus(true);
-                        ((Movie) obj).itemAvailable();
-                        rentedItem.remove(i);
-                    }
-                }
+                ((Movie) obj).itemAvailable();
             }
         }
     }
@@ -96,7 +86,8 @@ public class Borrower {
             }
         }
 
-        for (TransactionRecord item : rentedItem) {
+        TransactionRecord item = findTransactionRecord(rentedItem, obj);
+        if (item != null) {
             if (item.getFineAmount() > 0 ) {
                 System.out.println("Item cannot be borrowed as there is an outstanding late fine.");
                 return false;
@@ -108,33 +99,36 @@ public class Borrower {
 
     // Used to pay the fine associated with the rental item if it's returned past it's due date.
     public void paidFine(Object obj) {
-        for (TransactionRecord item : rentedItem) {
-            if (item.getItemName().equals(((Book) obj).getTitle())) {
-                item.setFineAmount(0);
-            }
-        }
+        TransactionRecord item = findTransactionRecord(rentedItem, obj);
+        item.setFineAmount(0);
     }
 
     // Extends the due date for when an item is suppose to be returned.
     public void renewItem(Object obj, int num) {
-        for (TransactionRecord item : rentedItem) {
-            if (item.getItemName().equals(((Book) obj).getTitle())) {
-                item.extendDueDate(num);
-            }
-        }
+        TransactionRecord item = findTransactionRecord(rentedItem, obj);
+        item.extendDueDate(num);
     }
 
     // Prints out details about current item(s) being borrowed.
     public String getItemDetails(Object obj) {
+        TransactionRecord item = findTransactionRecord(rentedItem, obj);
+
+        if (item == null) {
+            return "Item details not found";
+        }
+        return item.transactionDetails();
+    }
+
+    public TransactionRecord findTransactionRecord(List<TransactionRecord> transactionRecords, Object obj) {
         for (TransactionRecord item : rentedItem) {
-            if (obj instanceof Book) {
-                if (item.getItemName().equals(((Book) obj).getTitle())) {
-                    return item.transactionDetails();
-                }
+            if (obj instanceof Book && item.getItemName().equals(((Book) obj).getTitle())) {
+                return item;
+            }
+            else if (obj instanceof Movie && item.getItemName().equals(((Movie) obj).getTitle())) {
+                return item;
             }
         }
-
-        return "Item details not found";
+        return null;
     }
 
     // Returns information about the borrower's name and related details.

@@ -81,7 +81,7 @@ public class TransactionRecord {
 
     // Extends the date that an item is suppose to be returned.
     public void extendDueDate(int num) {
-        dueDate.plusDays(num);
+        dueDate = dueDate.plusDays(num);
     }
 
     // Returns information about the borrowed item's transaction record.

@@ -70,4 +70,18 @@ public class tests {
         Assert.assertEquals("Borrower's Name: Benton | Number of Items Borrowed: 0 | Borrow Limit: 2", borrower.borrowerNameAndDetails());
         Assert.assertEquals("Item details not found", borrower.getItemDetails(b));
     }
+
+    @Test
+    public void renewItemTest() {
+        borrower.requestItem(b, borrower.getName());
+        Assert.assertEquals(false, b.getAvailability());
+        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: " + today.toString() + " | Due Date: " + returnDateBook.toString() + " | Fine: -1.0 | Return Status: false", borrower.getItemDetails(b));
+
+        borrower.renewItem(b,3);
+        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: " + today.toString() + " | Due Date: " + returnDateBook.plusDays(3).toString() + " | Fine: -1.0 | Return Status: false", borrower.getItemDetails(b));
+
+        borrower.returnItem(b, returnDateGood);
+        Assert.assertEquals(true, b.getAvailability());
+        Assert.assertEquals("Item details not found", borrower.getItemDetails(b));
+    }
 }
