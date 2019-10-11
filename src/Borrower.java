@@ -49,7 +49,7 @@ public class Borrower {
         for (int i = 0; i < rentedItem.size(); i++) {
             if (obj instanceof Book) {
                 if (rentedItem.get(i).getItemName().equals(((Book) obj).getTitle())) {
-                    if (checkPastDue(rentedItem.get(i), returnDate) == true) {
+                    if (rentedItem.get(i).checkPastDue(returnDate) == true) {
                         System.out.println("Must pay late fine before book can be returned");
                     }
                     else {
@@ -61,7 +61,7 @@ public class Borrower {
             }
             else if (obj instanceof Movie) {
                 if (rentedItem.get(i).getItemName().equals(((Movie) obj).getTitle())) {
-                    if (checkPastDue(rentedItem.get(i), returnDate) == true) {
+                    if (rentedItem.get(i).checkPastDue(returnDate) == true) {
                         System.out.println("Must pay late fine before movie can be returned");
                     }
                     else {
@@ -72,19 +72,6 @@ public class Borrower {
                 }
             }
         }
-    }
-
-    // Checks if an item being returned is past it's due date and if so calculates the late fine.
-    public Boolean checkPastDue(TransactionRecord item, LocalDate returnDate) {
-        long days = ChronoUnit.DAYS.between(returnDate, item.getDueDate());
-
-        if (days < 0 && item.getFineAmount() == -1) {
-            double fine = 1.5*Math.abs(days);
-            item.setFineAmount(fine);
-            return true;
-        }
-
-        return false;
     }
 
     // Verifies that the borrower has not exceeded the borrow limit, the item requested to be borrowed is available, and

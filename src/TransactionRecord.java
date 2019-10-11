@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class TransactionRecord {
     public static final int BOOK = 0;
@@ -26,14 +27,26 @@ public class TransactionRecord {
     public LocalDate borrowItemDueDate(int itemType) {
         switch (itemType) {
             case BOOK:
-                return dateOfIssue.plusDays(1);
+                return dateOfIssue.plusDays(5);
 
             case MOVIE:
-                return dateOfIssue.plusDays(10);
+                return dateOfIssue.plusDays(8);
 
             default:
                 throw new IllegalArgumentException("Invalid item");
         }
+    }
+
+    // Checks if an item being returned is past it's due date and if so calculates the late fine.
+    public Boolean checkPastDue(LocalDate returnDate) {
+        long days = ChronoUnit.DAYS.between(returnDate, dueDate);
+
+        if (days < 0 && fineAmount == -1) {
+            fineAmount = 1.5*Math.abs(days);
+            return true;
+        }
+
+        return false;
     }
 
     // Retrieves the fine amount associated with the borrowed item.

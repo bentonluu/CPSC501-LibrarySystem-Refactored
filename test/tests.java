@@ -14,6 +14,12 @@ public class tests {
     private static final Borrower borrower = new Borrower("Benton");
     private static final Borrower borrower1 = new Borrower("Bob");
 
+    private static final LocalDate today = LocalDate.now();
+    private static final LocalDate returnDateGood = LocalDate.now().plusDays(2);
+    private static final LocalDate returnDateBad = LocalDate.now().plusDays(10);
+    private static final LocalDate returnDateBook = LocalDate.now().plusDays(5);
+    private static final LocalDate returnDateMovie = LocalDate.now().plusDays(8);
+
     @Test
     public void borrowItemTest() {
         // Borrower borrows a book.
@@ -25,7 +31,7 @@ public class tests {
     public void returnItemTest() {
         // Borrower borrows a book and returns the item.
         borrower.requestItem(b, borrower.getName());
-        borrower.returnItem(b, LocalDate.of(2019,10,8));
+        borrower.returnItem(b, returnDateGood);
         Assert.assertEquals("Book Title: The Hunger Games | Author Name: Suzanne Collins | Book ID: 0 | Availability: true", b.itemNameAndDetails());
     }
 
@@ -38,29 +44,29 @@ public class tests {
         Assert.assertEquals(false, m2.getAvailability());
 
         // Checks if book and movie availability is available after being returned.
-        borrower.returnItem(b, LocalDate.of(2019,10,9));
-        borrower.returnItem(m2, LocalDate.of(2019,10,10));
+        borrower.returnItem(b, returnDateGood);
+        borrower.returnItem(m2, returnDateGood);
         Assert.assertEquals(true, b.getAvailability());
         Assert.assertEquals(true, m2.getAvailability());
     }
 
     @Test
-    public void returnItemPastDue() {
+    public void returnItemPastDueTest() {
         // Borrower borrows a book.
         borrower.requestItem(b, borrower.getName());
         Assert.assertEquals("Borrower's Name: Benton | Number of Items Borrowed: 1 | Borrow Limit: 2", borrower.borrowerNameAndDetails());
-        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: 2019-10-10 | Due Date: 2019-10-11 | Fine: -1.0 | Return Status: false", borrower.getItemDetails(b));
+        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: " + today.toString() + " | Due Date: " + returnDateBook.toString() + " | Fine: -1.0 | Return Status: false", borrower.getItemDetails(b));
 
         // Borrower tries to return item but it's past due and must pay fine first before item can be returned.
-        borrower.returnItem(b, LocalDate.of(2019,10,15));
-        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: 2019-10-10 | Due Date: 2019-10-11 | Fine: 6.0 | Return Status: false", borrower.getItemDetails(b));
+        borrower.returnItem(b, returnDateBad);
+        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: " + today.toString() + " | Due Date: " + returnDateBook.toString() + " | Fine: 7.5 | Return Status: false", borrower.getItemDetails(b));
 
         // Borrower pays late fine.
         borrower.paidFine(b);
-        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: 2019-10-10 | Due Date: 2019-10-11 | Fine: 0.0 | Return Status: false", borrower.getItemDetails(b));
+        Assert.assertEquals("Item: The Hunger Games | Item Type: 0 | Borrower: Benton | Date of Issue: " + today.toString() + " | Due Date: " + returnDateBook.toString() + " | Fine: 0.0 | Return Status: false", borrower.getItemDetails(b));
 
         // Borrower is able to return item.
-        borrower.returnItem(b, LocalDate.of(2019,10,15));
+        borrower.returnItem(b, returnDateBad);
         Assert.assertEquals("Borrower's Name: Benton | Number of Items Borrowed: 0 | Borrow Limit: 2", borrower.borrowerNameAndDetails());
         Assert.assertEquals("Item details not found", borrower.getItemDetails(b));
     }
